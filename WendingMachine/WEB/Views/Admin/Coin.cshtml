@@ -1,0 +1,29 @@
+﻿@model CoinViewModel
+@{ ViewData["Title"] = "Admin Coin"; }
+<div>
+    <h2>Редактирование Монеты @Model.Value руб:</h2>
+    @using (Html.BeginForm(null, null, FormMethod.Post))
+    {
+         <p class="hidden-block">
+            @Html.LabelFor(d => d.Value, "Номинал:")<br />
+            @Html.TextBoxFor(d => d.Value, new { type = "number", @class = "" })
+        </p>
+        <p>
+            @Html.LabelFor(d => d.CountCoins, "Кол-во монет:")<br />
+            @Html.TextBoxFor(d => d.CountCoins, new { type = "number", @class = "", @step = "1", @value = "0", @oninput = "this.value = Math.round(this.value);" })
+            <span asp-validation-for="CountCoins" />
+        </p>
+        <p>
+            @Html.LabelFor(d => d.IsAvailable, "Доступность монеты:")<br />
+            @Html.CheckBoxFor(d => d.IsAvailable, new { type = "checkbox", @class = "" })
+        </p>
+        <p class="margin-top-20 field-validation-error">@ViewBag.ErrorMessage</p>
+        <p class="margin-top-20">
+            <input type="submit" value="Сохранить" accept="image/.jpeg,.jpg,.png,.webp"/>
+        </p>
+    }
+</div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>

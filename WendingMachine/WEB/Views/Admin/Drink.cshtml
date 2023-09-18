@@ -1,0 +1,37 @@
+﻿@model DrinkViewModel
+@{ ViewData["Title"] = "Admin Drink"; }
+<div>
+    <h2>Редактирование напитка:</h2>
+    <img src="~/images/@Model.ImageUrl" class="image-edit">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <p class="hidden-block">
+            @Html.LabelFor(d => d.ImageUrl, "Url картинки:")<br />
+            @Html.TextBoxFor(d => d.ImageUrl, new { type = "text", @class = "" })
+        </p>
+        <p>
+            @Html.LabelFor(d => d.Title, "Название напитка:")<br />
+            @Html.TextBoxFor(d => d.Title, new { type = "text", @class = "" })
+            <span asp-validation-for="Title" />
+        </p>
+        <p>
+            @Html.LabelFor(d => d.Count, "Кол-во в автомате:")<br />
+            @Html.TextBoxFor(d => d.Count, new { type = "number", @class = "", @step = "1", @value = "0", @oninput = "this.value = Math.round(this.value);" })
+            <span asp-validation-for="Count" />
+        </p>
+        <p>
+            @Html.LabelFor(d => d.Price, "Цена руб:")<br />
+            @Html.TextBoxFor(d => d.Price, new { type = "number", @class = "", @step = "1", @value = "0", @oninput = "this.value = Math.round(this.value);" })
+            <span asp-validation-for="Price" />
+        </p>
+        <p class="margin-top-20"><input type="file" name="file" /></p>
+        <p class="margin-top-20 field-validation-error">@ViewBag.ErrorMessage</p>
+        <p class="margin-top-20">
+            <input type="submit" value="Сохранить" accept="image/.jpeg,.jpg,.png,.webp"/>
+        </p>
+    }
+</div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.1.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.10/jquery.validate.unobtrusive.min.js"></script>

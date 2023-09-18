@@ -1,0 +1,181 @@
+﻿h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background: #222;
+    margin-bottom: 30px;
+}
+
+.navbar-brand{
+    text-decoration: none;
+    color:snow;
+}
+
+.navbar-brand:hover {
+    color: burlywood;
+}
+
+body {
+    padding-bottom: 20px;
+    /*display:flex;*/
+}
+#main-content {
+    display: flex;    
+    flex-direction: row;
+}
+#container {
+   
+    margin-top: 10px;
+    display: flex;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    background: #f0f4f6;
+    border: solid 1px #CED4DA;
+    border-radius: 10px;
+}
+.coin-item{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    text-align:center;
+}
+.coin-img {
+    width: 60px;
+    height: 60px;
+}
+.balance {
+    font-size: 18px;
+    text-align: center;
+}
+.items-area{
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around;
+    width:60%;
+    flex-wrap:wrap;
+}
+.coins-area{
+    width:38%;
+}
+.color-red {
+    color: red;
+}
+.font-12 {
+    font-size: 12px;
+}
+.drink-item {
+    min-height: 30%;
+    border: solid 1px #CED4DA;
+    border-radius: 10px;
+    margin: 10px;
+    width: 30%;
+    text-align: center;
+    background: #f0f4f6;
+    padding-top: 10px;
+}
+.img1 {
+    width:30%;
+    height:30%;
+}
+.drink-image {
+    width: 30%;
+    height: 50%;
+}
+.hidden-block {
+    display:none;
+}
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.image-edit {
+    width: 60px;
+    height: 100px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.balance-area {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 0 auto;
+    justify-content: center;
+}
+.balance-title{
+    font-style:bold;
+    font-size:18px;
+}
+.add-drink {
+    display: flex;
+    flex-direction: column;
+}
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+.add-drink-area {
+    padding: 10px 10px 10px 40px;
+    border: solid 1px #CED4DA;
+    border-radius: 10px;
+    background: #f0f4f6;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+/*input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}*/
+
+.validation-summary-errors {
+    color: #b94a48;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}

@@ -1,0 +1,101 @@
+﻿@model WendingMachineViewModel
+@{
+    ViewData["Title"] = "Admin Page";
+}    
+<div id="main-content">
+   
+    @if (Model != null)
+    {      
+       
+        <div class="items-area">
+            @foreach (var t in Model.Drinks)
+            {
+                
+                    @if (t.IsAvailable == true)
+                    {
+                        <div class="drink-item">
+                            <img src="~/images/@t.ImageUrl" class="drink-image">
+                            <p>Напиток - @t.Title</p>
+                            <p>Цена - @t.Price</p>
+                            <p>Количество - @t.Count</p>
+                            <div>
+                                @Html.ActionLink("Изменить", "Drink", new { Id = t.Id })
+                            </div>  
+                            <div>
+                                @*@Html.ActionLink("Удалить", "DeleteDrink", new { Id = t.Id, MachineId = Model.Id })*@
+                                <a href="javascript: void(0)" onclick="return deleteDrink(@t.Id, @Model.Id)">Удалить</a>
+                            </div>    
+                        </div>
+                    }
+                
+            }
+        </div>
+
+         <div class="coins-area">
+         <div id="container">
+            @foreach (var t in ViewBag.Coins)
+            {
+                    <div class="coin-item">
+                        <img class="coin-img" src="~/images/@t.ImageUrl">
+                        <p class="font-12">@t.Value руб.</p>
+                        <p class="font-12">Кол-во монет: @t.CountCoins шт.</p>
+                        @if (t.IsAvailable == true)
+                        {
+                            <p class="font-12">Разблокирована</p>
+                        }
+                        else { <p class="font-12">Заблокирована</p>}
+                        
+                        @Html.ActionLink("Изменить", "Coin", new { Id = t.Id})
+                   </div>
+            }        
+         </div>
+
+          <div class="balance-area">
+            <p class="balance">Баланс автомата @Model.Balance руб.</p>
+            <br />
+          </div>
+          <div>
+              @Html.ActionLink("Добавить напиток", "AddDrink", "Admin", null, new { @class = "btn btn-primary width-100" })
+          </div>
+     </div>
+    }
+
+    @if(ViewBag.IsError)
+    {
+        <div id="error" >
+            <p id="errorMessage" class="color-red">@ViewBag.ErrorMessage</p>
+        </div>
+    }
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    var urlDeleteDrink = '@ViewBag.UrlDeleteDrink';
+
+    function deleteDrink(id, machineId) {
+        var deleteDrinkDto = {
+            'DrinkId': id,
+            'MachineId': machineId,
+        };
+
+        $.ajax({
+            type: "PUT",
+            url: urlDeleteDrink,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(deleteDrinkDto),
+            success: function (data) {
+                window.location.href = '/Admin/';
+            },
+            failure: function (response) {
+                alert(`Ошибка! ${response.status} - ${response.responseText}`);
+            },
+            error: function (response) {
+                alert(`Ошибка! ${response.status} - ${response.responseText}`);
+            }
+        });
+    }
+</script>
+

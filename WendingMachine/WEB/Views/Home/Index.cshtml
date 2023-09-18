@@ -1,0 +1,247 @@
+﻿@model WendingMachineViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}    
+
+<div id="main-content" style="display: none">
+    <div id="items-area" class="items-area">
+        @*@foreach (var t in Model.Drinks)
+            {
+
+                    @if (t.IsAvailable == true)
+                    {
+                        <div class="drink-item">
+                        <img src="~/images/@t.ImageUrl" class="drink-image" title="картинка">
+                        <p>Напиток - @t.Title</p>
+                        <p>Цена - @t.Price</p>
+                        <p>Количество - @t.Count</p>
+                        @if (t.Count > 0)
+                        {
+                            @if (Model.Balance >= t.Price)
+                            {
+                                @Html.ActionLink("Купить", "OrderDrink", new { DrinkId = t.Id, MachineId = Model.Id })
+                            }
+                        }
+                        else
+                        {
+                            <p class="color-red">Недоступен</p>
+                        }
+                        </div>
+                    }
+
+            }*@
+    </div>
+
+    <div class="coins-area">
+        <div id="container">
+            @*@foreach (var t in ViewBag.Coins)
+                {
+                        <div class="coin-item">
+                            <img class="coin-img" src="~/images/@t.ImageUrl">
+                            <p>@t.Value руб.</p>
+                            @if (t.IsAvailable == true)
+                            {
+                            @Html.ActionLink("Внести", "AddBalanceCoin", new { Value = t.Value, MachineId = Model.Id })
+                            }
+                            else { <p class="color-red">Заблокирована</p> }
+                       </div>
+                }*@
+        </div>
+
+        <div class="balance-area">
+            @*<p id="balance" class="balance">Баланс автомата @Model.Balance руб.</p>*@
+            <p id="balance" class="balance"></p>
+            <br />
+            <button id="btnTakeTips" class="btn btn-primary">Забрать сдачу</button>
+        </div>
+    </div>
+
+</div>
+<div id="error" style="display: none">
+    <p id="errorMessage" class="color-red"></p>
+</div>
+
+<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="editModel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Ваша сдача</h5>
+                <button type="button" id="btnClose" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <ul id="tips_list"></ul>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnOk" class="btn btn-primary">Забрать</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    var url = '@ViewBag.Url';
+    var urlTakeTips = '@ViewBag.TakeTipsUrl';
+    var urlOrderDrink = '@ViewBag.UrlOrderDrink';
+    var urlAddBalanceCoin = '@ViewBag.UrlAddBalanceCoin';
+
+    /*$("#myModal").click(takeTips);*/
+    $("#btnClose").click(takeTips);
+    $("#btnOk").click(takeTips);
+
+    $(function () {
+        loadData();
+    });
+
+    function loadData() {
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                var balance = result.balance;
+                var drinks = result.drinks;
+                var coins = result.coins;
+
+                var drinksHtml = '';
+                $.each(drinks, function (key, item) {
+                    if (item.isAvailable) {
+                        var drink = '';
+                        drink += '<div class="drink-item">';
+                        drink += '<img src="/images/' + item.imageUrl + '" class="drink-image" title="картинка">'
+                        drink += '<p> Напиток - ' + item.title + '</p>';
+                        drink += '<p> Цена - ' + item.price + '</p>';
+                        drink += '<p> Количество - ' + item.count + '</p>';
+                        if (parseInt(item.count) > 0) {
+                            if (parseInt(balance) > parseInt(item.price)) {
+                                drink += '<a href="javascript: void(0)" onclick="return orderDrink(' + item.id + ', 1' + ')">Купить</a>';
+                            }
+                        }
+                        else {
+                            drink += '<p class="color-red">Недоступен</p>';
+                        }
+                        drink += '</div>';
+                        drinksHtml += drink;
+                    }
+                });
+                $('#items-area').append(drinksHtml);
+
+                var coinsHtml = '';
+                $.each(coins, function (key, item) {
+                    var coin = '';
+                    coin += '<div class="coin-item">';
+                    coin += '<img class="coin-img" src="/images/' + item.imageUrl + '" title="картинка">';
+                    coin += '<p>' + item.value + ' руб.</p>';
+                    if (item.isAvailable == true) {
+                        coin += '<a href="javascript: void(0)" onclick="return addBalanceCoin(' + item.value + ', 1' + ')">Внести</a>';
+                    }
+                    else {
+                        coin += '<p class="color-red">Заблокирована</p>';
+                    }
+                    coin += '</div>';
+                    coinsHtml += coin;
+                });
+                $('#container').append(coinsHtml);
+                $('#balance').text('Баланс автомата ' + balance + ' руб.');
+                if (balance == 0) {
+                    $('#btnTakeTips').attr('disabled', 'disabled');
+                }
+                $('#main-content').show();
+            },
+            failure: function (response) {
+                $('#errorMessage').text(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+                $('#error').show();
+            },
+            error: function (response) {
+                $('#errorMessage').text(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+                $('#error').show();
+            }
+        });
+    }
+
+    function orderDrink(drinkId, machineId) {
+        var orderDrinkDto = {
+            'DrinkId': drinkId,
+            'MachineId': machineId,
+        };
+
+        $.ajax({
+            type: "PUT",
+            url: urlOrderDrink,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(orderDrinkDto),
+            success: function (data) {
+                window.location.href = '/';
+            },
+            failure: function (response) {
+                alert(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+            },
+            error: function (response) {
+                alert(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+            }
+        });
+    }
+
+    function addBalanceCoin(value, machineId) {
+        var addBalanceDto = {
+            'Cash': value,
+            'MachineId': machineId,
+        };
+
+        $.ajax({
+            type: "PUT",
+            url: urlAddBalanceCoin,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(addBalanceDto),
+            success: function (data) {
+                window.location.href = '/';
+            },
+            failure: function (response) {
+                alert(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+            },
+            error: function (response) {
+                alert(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+            }
+        });
+    }
+
+    function takeTips () {
+         window.location.href = '/';
+    };
+
+    $("#btnTakeTips").click(function () {
+        $.ajax({
+            type: "GET",
+            url: urlTakeTips,
+            success: function (data) {
+                var amount = data.tips;
+                var tipsList = data.coinsCountList;
+
+                $.each(tipsList, function (index, element) {
+                    $('#tips_list').append('<li>' + element.coinValue + ' руб. - ' + element.coinCount + ' шт.' + '</li>');
+                });
+
+                $("#myModal").modal("show");
+            },
+            failure: function (response) {
+                alert(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+            },
+            error: function (response) {
+                alert(`Ошибка загрузки! ${response.status} - ${response.responseText}`);
+            }
+        });
+    });
+</script>
